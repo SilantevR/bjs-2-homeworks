@@ -20,23 +20,39 @@ function getArrayParams(arr) {
 
 // Задание 2
 function worker(arr) {
-  let sum;
-
-  // Ваш код
-
+  let sum = 0;
+  for (i = 0; i < arr.length; i++) {
+    sum += arr[i];
+  }
   return sum;
 }
 
 function makeWork(arrOfArr, func) {
-  let max;
-
-  // Ваш кода
-  // for ...
+  let max = -Infinity;
+  for (j = 0; j < arrOfArr.length; j++) {
+    let ElemArrOfArr = arrOfArr[j];
+    let SumArrOfArr = func(ElemArrOfArr);
+    if (max < SumArrOfArr) {
+      max = SumArrOfArr;
+    }
+  }
 
   return max;
 }
 
 // Задание 3
 function worker2(arr) {
-  // Ваш код
+  let workerMin = +Infinity;
+  let workerMax = -Infinity;
+  let result;
+  for (i = 0; i < arr.length; i++) {
+    if (arr[i] > workerMax) {
+      workerMax = arr[i];
+    }
+    if (arr[i] < workerMin) {
+      workerMin = arr[i];
+    }
+  }
+  result = Number(Math.abs(workerMax - workerMin).toFixed(2));
+  return result;
 }
