@@ -1,25 +1,29 @@
 class AlarmClock {
-  constructor(id, alarmCollection = []) {
-    this.alarmCollection = alarmCollection;
+  constructor() {
+    this.alarmCollection = [];
     this.timerId = null;
   }
-  addClock(time, fn, id) {
-    let listOfId = [];
-    this.alarmCollection.forEach((item) => listOfId.push(item.id));
-    if (id === undefined) {
-      throw new Error("error text");
-    } else if (listOfId.includes(id)) {
+  addClock(time, callback, id) {
+    //let listOfId = [];
+    //this.alarmCollection.forEach((item) => listOfId.push(item.id));
+    if (!id) {
+      throw new Error("ID задан неправильно");
+    } else if (this.alarmCollection.some((item) => item.id === id)) {
       console.error("Будильник с таким id уже существует");
       return;
     } else {
-      this.alarmCollection.push({ id: id, time: time, callback: fn });
+      this.alarmCollection.push({ id, time, callback });
     }
   }
   removeClock(id) {
-    let listOfId = [];
-    this.alarmCollection.forEach((item) => listOfId.push(item.id));
-    let removeElem = listOfId.findIndex((item) => item === id);
-    this.alarmCollection.splice(removeElem, 1);
+    //let listOfId = [];
+    //this.alarmCollection.forEach((item) => listOfId.push(item.id));
+    let removeElem = this.alarmCollection.findIndex((item) => item.id === id);
+    if (removeElem !== -1) {
+      this.alarmCollection.splice(removeElem, 1);
+      return true;
+    }
+    return false;
   }
   getCurrentFormattedTime() {
     return new Date().toLocaleTimeString("ru", {
@@ -32,8 +36,7 @@ class AlarmClock {
       this.timerId = setInterval(() => this.start(), 60000);
     }
     let checkClock = (alarm) => {
-      let time = `${this.getCurrentFormattedTime()}`;
-      if (alarm.time === time) {
+      if (alarm.time === this.getCurrentFormattedTime()) {
         return alarm.callback();
       }
     };
@@ -41,6 +44,7 @@ class AlarmClock {
   }
   stop() {
     if (this.timerId !== null) {
+      clearInterval(this.timerID);
       this.timerId = null;
     }
   }
