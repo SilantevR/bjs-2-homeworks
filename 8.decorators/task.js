@@ -5,32 +5,30 @@ function cachingDecoratorNew(func) {
     if (hash in cache) {
       console.log("Из кэша: " + cache[hash]);
       return "Из кэша: " + cache[hash];
-    } else {
-      let result = func.call(this, ...args);
-      let keys = Object.keys(cache);
-      if (keys.length >= 5) {
-        delete cache[keys[0]];
-      }
-      cache[hash] = result;
-      console.log("Вычисляем: " + result);
-      return "Вычисляем: " + result;
     }
+
+    let result = func.call(this, ...args);
+    let keys = Object.keys(cache);
+    if (keys.length >= 5) {
+      delete cache[keys[0]];
+    }
+    cache[hash] = result;
+    console.log("Вычисляем: " + result);
+    return "Вычисляем: " + result;
   };
 }
 
 function debounceDecoratorNew(func, ms) {
   let timeout;
   let timer;
-  let timerForLast;
   //let count = 0;
 
   return function () {
     //console.log(++count);
     clearTimeout(timer);
-    clearTimeout(timerForLast);
     timer = setTimeout(() => {
       timeout = false;
-      timerForLast = setTimeout(func, ms);
+      //func(); Если добавить, тогда функция будет вызываться на 5 и 7 вызове
     }, ms);
     if (timeout) {
       return;
@@ -43,21 +41,18 @@ function debounceDecoratorNew(func, ms) {
 function debounceDecorator2(func, ms) {
   let timeout;
   let timer;
-  let timerForLast;
-  let count = 0;
-
-  return function () {
-    console.log(++count);
+  wrapper.count = 0;
+  function wrapper() {
+    console.log(++wrapper.count);
     clearTimeout(timer);
-    clearTimeout(timerForLast);
     timer = setTimeout(() => {
       timeout = false;
-      timerForLast = setTimeout(func, ms);
     }, ms);
     if (timeout) {
       return;
     }
     func();
     timeout = true;
-  };
+  }
+  return wrapper;
 }
